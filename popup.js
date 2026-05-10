@@ -9,3 +9,39 @@ chrome.runtime.sendMessage({ type: "GET_CURRENT" }, (d) => {
       `${d.lat.toFixed(5)}, ${d.lng.toFixed(5)}`;
   }
 });
+
+// ─── Carrega regiões no select ────────────────────────────────────────────────
+ 
+chrome.runtime.sendMessage({ type: "GET_REGIONS" }, (regions) => {
+  const sel = document.getElementById("regionSel");
+  if (!regions || regions.length === 0) {
+    sel.innerHTML = '<option value="">— nenhuma —</option>';
+    return;
+  }
+  sel.innerHTML = '<option value="">— escolha —</option>' +
+    regions.map(r => `<option value="${r}">${r}</option>`).join("");
+});
+ 
+// ─── Teletransporte ───────────────────────────────────────────────────────────
+ 
+document.getElementById("teleportBtn").addEventListener("click", () => {
+  const rid = document.getElementById("regionSel").value;
+  if (!rid) return;
+ 
+  chrome.runtime.sendMessage({ type: "GET_COORDS", region_id: rid }, (coords) => {
+    if (!coords || coords.length === 0) return;
+ 
+    // GET_COORDS retorna mais recentes primeiro, índice 0 = último registrado
+    const { latitude: lat, longitude: lng } = coords[0];
+ 
+    const url = `https://www.google.com/maps/@${lat},${lng},17z`;
+ 
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      if (tabs[0]) {
+        chrome.tabs.update(tabs[0].id, { url });
+      } else {
+        chrome.tabs.create({ url });
+      }
+    });
+  });
+});
