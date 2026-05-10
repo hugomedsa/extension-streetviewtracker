@@ -1,4 +1,4 @@
-// ─── Padrões de extração de coordenadas (mesmos do app.py) ───────────────────
+// ─── Coordinate extraction patterns ────────────────────────────────────────
 const PATTERNS = [
   /@(-?\d+\.\d+),(-?\d+\.\d+)/,
   /!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/,
@@ -35,7 +35,7 @@ async function insertCoord(lat, lng, rid) {
     await chrome.storage.local.set({ coords, regions });
   }
 
-  // Sempre atualiza coordenada atual (mesma lógica do CURRENT_COORD do app.py)
+  // Always update current coordinate
   await chrome.storage.local.set({ current: { lat, lng } });
 }
 
@@ -47,7 +47,7 @@ async function deleteRegion(rid) {
   });
 }
 
-// ─── Monitor de navegação (substitui o CDP + watch_tab do app.py) ─────────────
+// ─── Navigation monitor ────────────────────────────────────────────────────
 
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo) => {
   if (!changeInfo.url) return;
@@ -57,13 +57,13 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo) => {
   const { lat, lng } = coord;
   const rid = regionId(lat, lng);
   await insertCoord(lat, lng, rid);
-  console.log(`[SVT] ✓ ${lat}, ${lng} → região ${rid}`);
+  console.log(`[SVT] ✓ ${lat}, ${lng} → region ${rid}`);
 
-  // Notifica o content script para atualizar o marcador em tempo real
+  // Notify content script to update marker in real-time
   try {
     await chrome.tabs.sendMessage(tabId, { type: "COORD_UPDATE", lat, lng });
   } catch (_) {
-    // Content script pode ainda não estar pronto; não é erro crítico
+    // Content script may not be ready yet; not a critical error
   }
 });
 
@@ -78,7 +78,7 @@ chrome.webNavigation.onHistoryStateUpdated.addListener(async (details) => {
   } catch (_) {}
 });
 
-// ─── Roteador de mensagens (substitui o servidor HTTP do app.py) ──────────────
+// ─── Message router ─────────────────────────────────────────────────────────
 
 chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
   (async () => {
@@ -95,7 +95,7 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
         const filtered = msg.region_id
           ? coords.filter(c => c.region_id === msg.region_id)
           : coords;
-        sendResponse([...filtered].reverse()); // mais recentes primeiro
+        sendResponse([...filtered].reverse()); // newest first
         break;
       }
 

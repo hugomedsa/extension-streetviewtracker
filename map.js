@@ -1,6 +1,6 @@
 "use strict";
 
-// ─── Estado ───────────────────────────────────────────────────────────────────
+// ─── State ──────────────────────────────────────────────────────────────────
 
 let autoFollow  = true;
 let lastHash    = null;
@@ -10,7 +10,7 @@ let prevAngle   = 0;
 let lastFetchTime = 0;
 let coordCache    = null;
 
-// ─── Mapa — inicialização direta (não depende do evento "load") ───────────────
+// ─── Map — direct initialization (does not depend on "load" event) ──────────
 
 const map = L.map("map", { zoomControl: false }).setView([0, 0], 2);
 
@@ -21,7 +21,7 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 
 const markers = L.layerGroup().addTo(map);
 
-// Redesenha ao redimensionar o container
+// Redraw when container is resized
 const ro = new ResizeObserver(() => map.invalidateSize());
 ro.observe(document.documentElement);
 window.addEventListener("resize", () => map.invalidateSize());
@@ -36,7 +36,7 @@ function toggleFollow() {
   btn.textContent = autoFollow ? "● Auto-Follow" : "○ Manual";
 }
 
-// ─── Regiões ──────────────────────────────────────────────────────────────────
+// ─── Regions ────────────────────────────────────────────────────────────────
 
 function saveRegion() {
   chrome.storage.local.set({ lastRegion: document.getElementById("regionSel").value });
@@ -48,7 +48,7 @@ async function loadRegions() {
     chrome.runtime.sendMessage({ type: "GET_REGIONS" }, (regions) => {
       const sel = document.getElementById("regionSel");
       if (!regions || regions.length === 0) {
-        sel.innerHTML = '<option value="">— nenhuma —</option>';
+        sel.innerHTML = '<option value="">— none —</option>';
         resolve();
         return;
       }
@@ -63,14 +63,14 @@ async function loadRegions() {
 
 async function deleteRegion() {
   const rid = document.getElementById("regionSel").value;
-  if (!rid || !confirm(`Deletar região ${rid} e todos os seus pontos?`)) return;
+  if (!rid || !confirm(`Delete region ${rid} and all its points?`)) return;
   chrome.runtime.sendMessage({ type: "DELETE_REGION", region_id: rid }, async () => {
     await loadRegions();
     fetchCoords();
   });
 }
 
-// ─── Marcadores ───────────────────────────────────────────────────────────────
+// ─── Markers ─────────────────────────────────────────────────────────────────
 
 function updateMarkers(coords) {
   const hash = JSON.stringify(coords);
@@ -88,7 +88,7 @@ function updateMarkers(coords) {
       opacity: 1,
       fillOpacity: 0.9
     })
-    .bindPopup(`<strong>Localização</strong><br>Lat: ${c.latitude.toFixed(5)}<br>Lng: ${c.longitude.toFixed(5)}`)
+    .bindPopup(`<strong>Location</strong><br>Lat: ${c.latitude.toFixed(5)}<br>Lng: ${c.longitude.toFixed(5)}`)
     .addTo(markers);
   });
 
@@ -112,7 +112,7 @@ function fetchCoords() {
   });
 }
 
-// ─── Marcador de posição atual ────────────────────────────────────────────────
+// ─── Current position marker ──────────────────────────────────────────────────
 
 function makeArrowIcon(angle) {
   return L.divIcon({
@@ -157,7 +157,7 @@ function fetchCurrent() {
   });
 }
 
-// ─── Mensagens em tempo real do content.js ────────────────────────────────────
+// ─── Real-time messages from content.js ─────────────────────────────────────
 
 window.addEventListener("message", (ev) => {
   if (ev.data?.type === "COORD_UPDATE") {

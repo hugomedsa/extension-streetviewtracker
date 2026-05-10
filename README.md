@@ -1,22 +1,27 @@
 # Street View Tracker
 
-Extensão Chrome que rastreia coordenadas visitadas no Google Street View e exibe em um mapa interativo usando Leaflet.
+A Chrome extension that tracks coordinates visited in Google Street View and displays them on an interactive map using Leaflet.
 
-## Funcionalidades
+## Features
 
-- Rastreia automaticamente coordenadas ao navegar no Street View
-- Exibe histórico de locais visitados em um mapa
-- Visualiza marcadores com coordenadas e timestamps
+- Automatically tracks coordinates when navigating Street View
+- Displays visited locations history on a map
+- Shows markers with coordinates and timestamps
+- Draggable and resizable overlay map
+- Region-based organization of visited points
+- Import/export history backup
 
-## Instalação
+## Installation
 
-1. Abra `chrome://extensions` no Chrome
-2. Ative "Modo do desenvolvedor"
-3. Clique em "Carregar sem compactação"
-4. Selecione a pasta do projeto
+1. Open `chrome://extensions` in Chrome
+2. Enable "Developer mode"
+3. Click "Load unpacked"
+4. Select the project folder
 
-## Uso
+## Usage
 
-- Navegue no Google Street View — as coordenadas são registradas automaticamente
-- Clique no ícone da extensão para ver a lista de locais
-- Clique em "Abrir Mapa" para visualizar todos os pontos no mapa
+- Navigate in Google Street View — coordinates are automatically recorded
+- Click the extension icon to see the list of locations
+- Click the overlay map in the top-left corner to view all points on the map
+- Use the region selector to filter points by area
+- Export or import your history as JSON

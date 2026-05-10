@@ -1,10 +1,10 @@
 (function () {
   "use strict";
 
-  // Evita injeção dupla
+  // Prevent double injection
   if (document.getElementById("sv-overlay-wrap")) return;
 
-  // ─── Estrutura do overlay ────────────────────────────────────────────────────
+  // ─── Overlay structure ─────────────────────────────────────────────────────
 
   const wrap = document.createElement("div");
   wrap.id = "sv-overlay-wrap";
@@ -21,7 +21,7 @@
     userSelect: "none"
   });
 
-  // Barra de título (drag handle)
+  // Title bar (drag handle)
   const titleBar = document.createElement("div");
   Object.assign(titleBar.style, {
     position: "absolute",
@@ -49,7 +49,7 @@
     ">▼</button>
   `;
 
-  // iframe apontando para a página da extensão (substitui localhost:8000)
+  // iframe pointing to the extension page
   const iframe = document.createElement("iframe");
   iframe.id = "sv-overlay-iframe";
   iframe.src = chrome.runtime.getURL("map.html");
@@ -62,7 +62,7 @@
     pointerEvents: "auto"
   });
 
-  // Handle de resize
+  // Resize handle
   const resizeHandle = document.createElement("div");
   Object.assign(resizeHandle.style, {
     position: "absolute",
@@ -89,12 +89,12 @@
   wrap.appendChild(resizeHandle);
   document.documentElement.appendChild(wrap);
 
-  // Oculta o minimapa nativo do Google Maps
+  // Hide the native Google Maps minimap
   const style = document.createElement("style");
   style.textContent = ".widget-minimap { display: none !important; }";
   document.head.appendChild(style);
 
-  // ─── Restaura posição/tamanho salvos ────────────────────────────────────────
+  // ─── Restore saved position/size ───────────────────────────────────────────
 
   chrome.runtime.sendMessage({ type: "GET_OVERLAY_STATE" }, (state) => {
     if (!state) return;
@@ -118,7 +118,7 @@
     });
   }
 
-  // ─── Minimizar / expandir ────────────────────────────────────────────────────
+  // ─── Minimize / expand ───────────────────────────────────────────────────────
 
   let minimized = false;
   let savedHeight = wrap.style.height;
@@ -214,7 +214,7 @@
     resizeHandle.addEventListener("pointerup",   onUp);
   });
 
-  // ─── Repassa atualizações de coordenada do background para o iframe ──────────
+  // ─── Forward coordinate updates from background to iframe ─────────────────
 
   chrome.runtime.onMessage.addListener((msg) => {
     if (msg.type === "COORD_UPDATE") {

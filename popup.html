@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -137,17 +137,17 @@
 <div class="stats">
   <div class="stat-box">
     <div class="val" id="total">—</div>
-    <div class="lbl">Pontos</div>
+    <div class="lbl">Points</div>
   </div>
   <div class="stat-box">
     <div class="val" id="regions">—</div>
-    <div class="lbl">Regiões</div>
+    <div class="lbl">Regions</div>
   </div>
 </div>
 
 <div class="current-box" id="currentBox">
-  <span>Última coord:</span>
-  <div class="coords" id="currentCoord">aguardando…</div>
+  <span>Last coord:</span>
+  <div class="coords" id="currentCoord">waiting…</div>
 </div>
 
 <hr class="sep">
@@ -158,9 +158,9 @@
     border-radius:7px;color:#ccc;font-size:10px;letter-spacing:.5px;
     font-family:'Courier New',monospace;cursor:pointer;
   ">
-    <option value="">— carregando —</option>
+    <option value="">— loading —</option>
   </select>
-  <button id="deleteRegionBtn" title="Excluir região" style="
+  <button id="deleteRegionBtn" title="Delete region" style="
     background:none;border:none;color:#444;font-size:15px;
     cursor:pointer;padding:0 2px;line-height:1;flex-shrink:0;
   ">🗑</button>
@@ -170,12 +170,12 @@
   width:100%;padding:8px;background:#111;border:1px solid #222;
   border-radius:7px;color:#666;font-size:10px;font-weight:700;
   letter-spacing:1px;text-transform:uppercase;cursor:pointer;
-">⌖ Ir para região</button>
+">⌖ Go to region</button>
 
 <hr class="sep">
 
 <hr class="sep">
-<div style="font-size:9px;color:#333;letter-spacing:1.2px;text-transform:uppercase;text-align:center;">Backup de histórico</div>
+<div style="font-size:9px;color:#333;letter-spacing:1.2px;text-transform:uppercase;text-align:center;">History backup</div>
 
 <div style="display:flex;gap:6px;">
   <button id="exportBtn" style="
@@ -193,7 +193,7 @@
 
 <hr class="sep">
 
-<footer>Abra o Google Maps para rastrear</footer>
+<footer>Open Google Maps to track</footer>
 
 <script src="popup.js"></script>
 </body>

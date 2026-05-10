@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Street View Tracker",
   "version": "1.0.0",
-  "description": "Rastreia coordenadas visitadas no Google Street View e exibe no mapa.",
+  "description": "Tracks coordinates visited in Google Street View and displays them on a map.",
 
   "permissions": ["storage", "tabs", "webNavigation"],
   "host_permissions": [

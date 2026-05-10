@@ -10,33 +10,33 @@ chrome.runtime.sendMessage({ type: "GET_CURRENT" }, (d) => {
   }
 });
 
-// ─── Carrega regiões no select ────────────────────────────────────────────────
+// ─── Load regions into select ─────────────────────────────────────────────────
  
 chrome.runtime.sendMessage({ type: "GET_REGIONS" }, (regions) => {
   const sel = document.getElementById("regionSel");
   if (!regions || regions.length === 0) {
-    sel.innerHTML = '<option value="">— nenhuma —</option>';
+    sel.innerHTML = '<option value="">— none —</option>';
     return;
   }
-  sel.innerHTML = '<option value="">— Escolha a região —</option>' +
+  sel.innerHTML = '<option value="">— Choose region —</option>' +
     regions.map(r => `<option value="${r}">${r}</option>`).join("");
 });
  
-// ─── Teletransporte ───────────────────────────────────────────────────────────
+// ─── Teleport ─────────────────────────────────────────────────────────────────
  
 document.getElementById("deleteRegionBtn").addEventListener("click", () => {
   const rid = document.getElementById("regionSel").value;
-  if (!rid || !confirm(`Excluir região ${rid}?`)) return;
+  if (!rid || !confirm(`Delete region ${rid}?`)) return;
   chrome.runtime.sendMessage({ type: "DELETE_REGION", region_id: rid }, () => {
     chrome.runtime.sendMessage({ type: "GET_REGIONS" }, (regions) => {
       const sel = document.getElementById("regionSel");
       if (!regions || regions.length === 0) {
-        sel.innerHTML = '<option value="">— nenhuma —</option>';
+        sel.innerHTML = '<option value="">— none —</option>';
         return;
       }
-      sel.innerHTML = '<option value="">— Escolha a região —</option>' +
+      sel.innerHTML = '<option value="">— Choose region —</option>' +
         regions.map(r => `<option value="${r}">${r}</option>`).join("");
-      // Redireciona para a primeira região restante
+      // Navigate to the first remaining region
       if (regions.length > 0) {
         chrome.runtime.sendMessage({ type: "GET_COORDS", region_id: regions[0] }, (coords) => {
           if (!coords || coords.length === 0) return;
@@ -77,10 +77,10 @@ document.getElementById("importFile").addEventListener("change", (e) => {
       const { coords, regions } = JSON.parse(ev.target.result);
       if (!coords || !regions) throw new Error();
       chrome.storage.local.set({ coords, regions }, () => {
-        alert(`Importado: ${coords.length} pontos, ${regions.length} regiões.`);
+        alert(`Imported: ${coords.length} points, ${regions.length} regions.`);
       });
     } catch (_) {
-      alert("Arquivo inválido.");
+      alert("Invalid file.");
     }
   };
   reader.readAsText(file);
@@ -93,7 +93,7 @@ document.getElementById("teleportBtn").addEventListener("click", () => {
   chrome.runtime.sendMessage({ type: "GET_COORDS", region_id: rid }, (coords) => {
     if (!coords || coords.length === 0) return;
  
-    // GET_COORDS retorna mais recentes primeiro, índice 0 = último registrado
+    // GET_COORDS returns newest first, index 0 = most recent
     const { latitude: lat, longitude: lng } = coords[0];
  
     const url = `https://www.google.com/maps/@${lat},${lng},17z`;
