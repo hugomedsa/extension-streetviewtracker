@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Street View Tracker</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 220px;
+    font-family: 'Courier New', Courier, monospace;
+    background: #0d0d0d;
+    color: #ccc;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 6px #22c55e88;
+    flex-shrink: 0;
+  }
+
+  h1 {
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #ddd;
+    font-weight: 700;
+  }
+
+  .sep { border: none; border-top: 1px solid #1c1c1c; }
+
+  .stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .stat-box {
+    background: #111;
+    border: 1px solid #1e1e1e;
+    border-radius: 7px;
+    padding: 8px 10px;
+    text-align: center;
+  }
+  .stat-box .val {
+    font-size: 20px;
+    font-weight: 700;
+    color: #22c55e;
+    line-height: 1.2;
+  }
+  .stat-box .lbl {
+    font-size: 9px;
+    color: #555;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  .current-box {
+    background: #0a0a0a;
+    border: 1px solid #1e1e1e;
+    border-radius: 7px;
+    padding: 8px 10px;
+    font-size: 10px;
+    color: #555;
+    letter-spacing: .5px;
+    min-height: 36px;
+  }
+  .current-box span { color: #888; }
+  .current-box .coords { color: #4ade80; font-size: 11px; margin-top: 2px; }
+
+  .btn-open {
+    display: block;
+    padding: 9px;
+    background: #14532d;
+    border: 1px solid #22c55e44;
+    border-radius: 7px;
+    color: #4ade80;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-align: center;
+    cursor: pointer;
+    transition: background .15s;
+    text-decoration: none;
+  }
+  .btn-open:hover { background: #166534; }
+
+  .btn-clear {
+    display: block;
+    padding: 7px;
+    background: none;
+    border: 1px solid #222;
+    border-radius: 7px;
+    color: #444;
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-align: center;
+    cursor: pointer;
+    transition: all .15s;
+    width: 100%;
+  }
+  .btn-clear:hover { border-color: #ef4444; color: #ef4444; }
+
+  footer {
+    font-size: 9px;
+    color: #2a2a2a;
+    text-align: center;
+    letter-spacing: .5px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="dot"></div>
+  <h1>Street View Tracker</h1>
+</header>
+
+<hr class="sep">
+
+<div class="stats">
+  <div class="stat-box">
+    <div class="val" id="total">—</div>
+    <div class="lbl">Pontos</div>
+  </div>
+  <div class="stat-box">
+    <div class="val" id="regions">—</div>
+    <div class="lbl">Regiões</div>
+  </div>
+</div>
+
+<div class="current-box" id="currentBox">
+  <span>Última coord:</span>
+  <div class="coords" id="currentCoord">aguardando…</div>
+</div>
+
+<hr class="sep">
+
+<a class="btn-open" href="map.html" target="_blank" id="openMap">
+  ↗ Abrir mapa completo
+</a>
+
+<button class="btn-clear" id="clearBtn">🗑 Limpar todos os dados</button>
+
+<hr class="sep">
+
+<footer>Abra o Google Maps para rastrear</footer>
+
+<script src="popup.js"></script>
+</body>
+</html>

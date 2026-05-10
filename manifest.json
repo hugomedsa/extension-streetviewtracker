@@ -1,0 +1,39 @@
+{
+  "manifest_version": 3,
+  "name": "Street View Tracker",
+  "version": "1.0.0",
+  "description": "Rastreia coordenadas visitadas no Google Street View e exibe no mapa.",
+
+  "permissions": ["storage", "tabs", "webNavigation"],
+  "host_permissions": [
+    "https://www.google.com/maps/*",
+    "https://maps.google.com/*"
+  ],
+
+  "background": {
+    "service_worker": "background.js"
+  },
+
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.google.com/maps/*",
+        "https://maps.google.com/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Street View Tracker"
+  },
+
+  "web_accessible_resources": [
+    {
+      "resources": ["map.html", "map.js", "leaflet.js", "leaflet.css"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
