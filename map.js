@@ -1,44 +1,33 @@
 "use strict";
 
-// ─── Mapa ─────────────────────────────────────────────────────────────────────
-
-let map;
-window.addEventListener("load", () => {
-    map = L.map("map", { zoomControl: false }).setView([0, 0], 2); 
-
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    maxZoom: 19,
-    attribution: "© OpenStreetMap"
-    }).addTo(map);
-
-    markers = L.layerGroup().addTo(map);
-
-    // Garante que o Leaflet redesenha ao resize do container
-    const ro = new ResizeObserver(() => map.invalidateSize());
-    ro.observe(document.documentElement); 
-});
-
-
-window.addEventListener("load",   () => setTimeout(() => map?.invalidateSize(), 300));
-window.addEventListener("resize", () => map.invalidateSize());
-
 // ─── Estado ───────────────────────────────────────────────────────────────────
 
-let autoFollow = true;
-let lastHash   = null;
-let gpsMarker  = null;
-let prevCoord  = null;
-let prevAngle  = 0;
-let panelOpen  = false;
-let markers = null;
+let autoFollow  = true;
+let lastHash    = null;
+let gpsMarker   = null;
+let prevCoord   = null;
+let prevAngle   = 0;
+let lastFetchTime = 0;
+let coordCache    = null;
+
+// ─── Mapa — inicialização direta (não depende do evento "load") ───────────────
+
+const map = L.map("map", { zoomControl: false }).setView([0, 0], 2);
+
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  maxZoom: 19,
+  attribution: "© OpenStreetMap"
+}).addTo(map);
+
+const markers = L.layerGroup().addTo(map);
+
+// Redesenha ao redimensionar o container
+const ro = new ResizeObserver(() => map.invalidateSize());
+ro.observe(document.documentElement);
+window.addEventListener("resize", () => map.invalidateSize());
+setTimeout(() => map.invalidateSize(), 300);
 
 // ─── UI helpers ───────────────────────────────────────────────────────────────
-
-function togglePanel() {
-  panelOpen = !panelOpen;
-  document.getElementById("ctrl").classList.toggle("open", panelOpen);
-  document.getElementById("toggle-btn").textContent = panelOpen ? "▶" : "◀";
-}
 
 function toggleFollow() {
   autoFollow = !autoFollow;
@@ -50,7 +39,7 @@ function toggleFollow() {
 // ─── Regiões ──────────────────────────────────────────────────────────────────
 
 function saveRegion() {
-  chrome.storage.local.set({ lastRegion: document.getElementById("regionSel").value});
+  chrome.storage.local.set({ lastRegion: document.getElementById("regionSel").value });
   fetchCoords();
 }
 
@@ -66,7 +55,7 @@ async function loadRegions() {
       sel.innerHTML = regions.map(r => `<option value="${r}">${r}</option>`).join("");
       chrome.storage.local.get("lastRegion", ({ lastRegion: saved }) => {
         if (saved && regions.includes(saved)) sel.value = saved;
-      resolve();
+        resolve();
       });
     });
   });
@@ -89,11 +78,10 @@ function updateMarkers(coords) {
   lastHash = hash;
 
   markers.clearLayers();
-  const zs = map.getZoomScale(map.getZoom());
 
   coords.forEach(c => {
     L.circleMarker([c.latitude, c.longitude], {
-      radius: 8 / zs,
+      radius: 6,
       fillColor: "#22c55e",
       color: "#16a34a",
       weight: 1,
@@ -104,11 +92,9 @@ function updateMarkers(coords) {
     .addTo(markers);
   });
 
-  document.getElementById("count").textContent = coords.length;
+  const countEl = document.getElementById("count");
+  if (countEl) countEl.textContent = coords.length;
 }
-
-let lastFetchTime = 0;
-let coordCache    = null;
 
 function fetchCoords() {
   const now = Date.now();
@@ -116,7 +102,8 @@ function fetchCoords() {
     updateMarkers(coordCache);
     return;
   }
-  const rid = document.getElementById("regionSel").value;
+  const ridEl = document.getElementById("regionSel");
+  const rid = ridEl ? ridEl.value : "";
   chrome.runtime.sendMessage({ type: "GET_COORDS", region_id: rid }, (data) => {
     if (!data) return;
     coordCache = data;
@@ -125,19 +112,19 @@ function fetchCoords() {
   });
 }
 
-// ─── Marcador de posição atual (seta brasileira) ──────────────────────────────
+// ─── Marcador de posição atual ────────────────────────────────────────────────
 
 function makeArrowIcon(angle) {
   return L.divIcon({
     className: "",
-    html: `<svg viewBox="0 0 300 260" width="32" height="28" xmlns="http://www.w3.org/2000/svg"
+    html: `<svg viewBox="0 0 300 260" width="22" height="20" xmlns="http://www.w3.org/2000/svg"
              style="transform:rotate(${angle}deg);transform-origin:50% 50%;display:block;filter:drop-shadow(0 2px 4px rgba(0,0,0,.5))">
       <path d="M 0 260 L 300 260 L 150 0 Z" fill="#002776"/>
       <path d="M 150 0 L 105 78 L 195 78 Z" fill="#FFDF00"/>
       <path d="M 0 260 L 300 260 L 150 0 Z" fill="none" stroke="rgba(0,0,0,0.3)" stroke-width="6"/>
     </svg>`,
-    iconSize:   [32, 28],
-    iconAnchor: [16, 14]
+    iconSize:   [22, 20],
+    iconAnchor: [11, 10]
   });
 }
 
@@ -157,12 +144,10 @@ function updateCurrentMarker(lat, lng) {
     gpsMarker = L.marker([lat, lng], { icon, zIndexOffset: 1000 }).addTo(map);
   }
 
-  if (autoFollow) {
-    map.setView([lat, lng], 16, { animate: true });
-  }
+  if (autoFollow) map.setView([lat, lng], 16, { animate: true });
 
-  // Dot verde = ativo
-  document.getElementById("live-dot").classList.remove("inactive");
+  const dot = document.getElementById("live-dot");
+  if (dot) dot.classList.remove("inactive");
 }
 
 function fetchCurrent() {
@@ -172,14 +157,12 @@ function fetchCurrent() {
   });
 }
 
-// ─── Recebe atualizações em tempo real vindas do content.js via postMessage ───
-//    (dispara antes do polling, para feedback instantâneo)
+// ─── Mensagens em tempo real do content.js ────────────────────────────────────
 
 window.addEventListener("message", (ev) => {
   if (ev.data?.type === "COORD_UPDATE") {
     const { lat, lng } = ev.data;
     updateCurrentMarker(lat, lng);
-    // Invalida cache para forçar recarga dos marcadores
     coordCache    = null;
     lastFetchTime = 0;
     fetchCoords();
@@ -189,6 +172,9 @@ window.addEventListener("message", (ev) => {
 // ─── Init ─────────────────────────────────────────────────────────────────────
 
 (async () => {
+  document.getElementById("regionSel")?.addEventListener("change", saveRegion);
+  document.getElementById("deleteRegionBtn")?.addEventListener("click", deleteRegion);
+
   await loadRegions();
   fetchCoords();
   fetchCurrent();

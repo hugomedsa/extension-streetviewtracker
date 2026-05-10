@@ -12,8 +12,8 @@
     position: "fixed",
     top: "22px",
     left: "0",
-    width: "320px",
-    height: "220px",
+    width: "240px",
+    height: "160px",
     zIndex: "999999",
     borderRadius: "0 0 10px 10px",
     boxShadow: "0 6px 24px rgba(0,0,0,.5)",
@@ -195,8 +195,8 @@
 
     function onMove(e) {
       if (!active) return;
-      wrap.style.width  = Math.max(200, sw + (e.clientX - sx)) + "px";
-      wrap.style.height = Math.max(120, sh + (e.clientY - sy)) + "px";
+      wrap.style.width  = Math.max(120, sw + (e.clientX - sx)) + "px";
+      wrap.style.height = Math.max(80, sh + (e.clientY - sy)) + "px";
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(() => {
         try { iframe.contentWindow?.dispatchEvent(new Event("resize")); } catch (_) {}

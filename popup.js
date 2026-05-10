@@ -9,11 +9,3 @@ chrome.runtime.sendMessage({ type: "GET_CURRENT" }, (d) => {
       `${d.lat.toFixed(5)}, ${d.lng.toFixed(5)}`;
   }
 });
-
-document.getElementById("clearBtn").addEventListener("click", async () => {
-  if (!confirm("Limpar todos os dados?")) return;
-  await chrome.storage.local.clear();
-  document.getElementById("total").textContent   = "0";
-  document.getElementById("regions").textContent = "0";
-  document.getElementById("currentCoord").textContent = "aguardando…";
-});
