@@ -152,13 +152,19 @@
 
 <hr class="sep">
 
-<select id="regionSel" style="
-  width:100%;padding:7px 8px;background:#111;border:1px solid #222;
-  border-radius:7px;color:#ccc;font-size:10px;letter-spacing:.5px;
-  font-family:'Courier New',monospace;cursor:pointer;
-">
-  <option value="">— carregando —</option>
-</select>
+<div style="display:flex;gap:6px;align-items:center;">
+  <select id="regionSel" style="
+    flex:1;padding:7px 8px;background:#111;border:1px solid #222;
+    border-radius:7px;color:#ccc;font-size:10px;letter-spacing:.5px;
+    font-family:'Courier New',monospace;cursor:pointer;
+  ">
+    <option value="">— carregando —</option>
+  </select>
+  <button id="deleteRegionBtn" title="Excluir região" style="
+    background:none;border:none;color:#444;font-size:15px;
+    cursor:pointer;padding:0 2px;line-height:1;flex-shrink:0;
+  ">🗑</button>
+</div>
 
 <button id="teleportBtn" style="
   width:100%;padding:8px;background:#111;border:1px solid #222;
