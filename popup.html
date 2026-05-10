@@ -119,7 +119,7 @@
 
   footer {
     font-size: 9px;
-    color: #2a2a2a;
+    color: #888;
     text-align: center;
     letter-spacing: .5px;
   }
@@ -174,9 +174,22 @@
 
 <hr class="sep">
 
-<a class="btn-open" href="map.html" target="_blank" id="openMap">
-  ↗ Abrir mapa completo
-</a>
+<hr class="sep">
+<div style="font-size:9px;color:#333;letter-spacing:1.2px;text-transform:uppercase;text-align:center;">Backup de histórico</div>
+
+<div style="display:flex;gap:6px;">
+  <button id="exportBtn" style="
+    flex:1;padding:8px;background:#111;border:1px solid #222;
+    border-radius:7px;color:#666;font-size:10px;font-weight:700;
+    letter-spacing:1px;text-transform:uppercase;cursor:pointer;
+  ">↓ Exportar</button>
+  <button id="importBtn" style="
+    flex:1;padding:8px;background:#111;border:1px solid #222;
+    border-radius:7px;color:#666;font-size:10px;font-weight:700;
+    letter-spacing:1px;text-transform:uppercase;cursor:pointer;
+  ">↑ Importar</button>
+  <input type="file" id="importFile" accept=".json" style="display:none;">
+</div>
 
 <hr class="sep">
 
